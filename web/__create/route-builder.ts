@@ -14,10 +14,11 @@ if (globalThis.fetch) {
   globalThis.fetch = updatedFetch;
 }
 
-// Recursively find all route.js files
+// Recursively find all route files
 async function findRouteFiles(dir: string): Promise<string[]> {
   const files = await readdir(dir);
   let routes: string[] = [];
+  const routeFileRegex = /^route\.(js|ts|tsx|jsx)$/;
 
   for (const file of files) {
     try {
@@ -26,9 +27,9 @@ async function findRouteFiles(dir: string): Promise<string[]> {
 
       if (statResult.isDirectory()) {
         routes = routes.concat(await findRouteFiles(filePath));
-      } else if (file === 'route.js') {
-        // Handle root route.js specially
-        if (filePath === join(__dirname, 'route.js')) {
+      } else if (routeFileRegex.test(file)) {
+        // Handle root route file specially
+        if (filePath === join(__dirname, file)) {
           routes.unshift(filePath); // Add to beginning of array
         } else {
           routes.push(filePath);
@@ -136,7 +137,7 @@ await registerRoutes();
 
 // Hot reload routes in development
 if (import.meta.env.DEV) {
-  import.meta.glob('../src/app/api/**/route.js', {
+  import.meta.glob('../src/app/api/**/route.{js,ts,tsx,jsx}', {
     eager: true,
   });
   if (import.meta.hot) {

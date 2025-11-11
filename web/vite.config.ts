@@ -56,6 +56,7 @@ export default defineConfig({
         'src/**/layout.tsx',
         'src/**/route.js',
         'src/**/route.ts',
+        '__create/**/*.ts',
       ],
     }),
     consoleToParent(),
