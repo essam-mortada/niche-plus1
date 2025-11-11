@@ -81,8 +81,9 @@ async function registerRoutes() {
   api.routes = [];
 
   for (const routeFile of routeFiles) {
+    const normalizedRouteFile = routeFile.replace(/\\/g, '/');
     try {
-      const route = await import(/* @vite-ignore */ `${routeFile}?update=${Date.now()}`);
+      const route = await import(/* @vite-ignore */ `${normalizedRouteFile}?update=${Date.now()}`);
 
       const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
       for (const method of methods) {
@@ -94,7 +95,7 @@ async function registerRoutes() {
               const params = c.req.param();
               if (import.meta.env.DEV) {
                 const updatedRoute = await import(
-                  /* @vite-ignore */ `${routeFile}?update=${Date.now()}`
+                  /* @vite-ignore */ `${normalizedRouteFile}?update=${Date.now()}`
                 );
                 return await updatedRoute[method](c.req.raw, { params });
               }
